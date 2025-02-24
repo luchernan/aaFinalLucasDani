@@ -1,4 +1,4 @@
-// Interfaz para el artista
+
 export interface Artist {
     id: number;
     name: string;
@@ -12,7 +12,7 @@ export interface Artist {
     type: string;
   }
   
-  // Interfaz para el álbum
+
   export interface Album {
     id: number;
     title: string;
@@ -25,8 +25,8 @@ export interface Artist {
     tracklist: string;
     type: string;
   }
-  
-  // Interfaz para la pista (canción)
+ 
+
   export interface Track {
     id: number;
     readable: boolean;
@@ -45,7 +45,7 @@ export interface Artist {
     type: string;
   }
   
-  // Interfaz para la respuesta completa de la API
+
   export interface DeezerAPIResponse {
     data: Track[];
     total: number;

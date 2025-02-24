@@ -1,13 +1,14 @@
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import SearchBar from "~/components/SearchBar";
+import { useState } from "react"; 
 
-export function meta({}: Route.MetaArgs) {
-  return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
-  ];
-}
+ const [search, setSearch] = useState<string>("");
 
 export default function Home() {
-  return <Welcome />;
+  return 
+  
+
+
+  
+  ;
 }
