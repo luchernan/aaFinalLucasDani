@@ -1,37 +1,29 @@
-import React from 'react';
+import React from "react";
+import type { Track } from "../types/interfaces";
 
-type Music = {
-    album: {
-        cover_big: string;
-        title: string;
-    };
-    title: string;
-    artist: {
-        name: string;
-    };
-    id: string | number;
-};
-
-type CardProps = {
-    music: Music;
+interface CardProps {
+    track: Track;
     index: number;
     addToFavorites: (index: number) => void;
     showAlbum: (albumTitle: string) => void;
     showArtist: (artistName: string) => void;
-};
+}
 
-const Card: React.FC<CardProps> = ({ music, index, addToFavorites, showAlbum, showArtist }) => {
+const Card: React.FC<CardProps> = ({ track, index, addToFavorites, showAlbum, showArtist }) => {
     return (
-        <div>
-            <img src={music.album.cover_big} alt="Imagen del artista" />
-            <h3 id={`title${index}`} className="title">{music.title}</h3>
-            <div className="autor">{music.artist.name}</div>
-            <div className="fav">
+        <div className="card">
+            <img
+                src={track.album.cover_big}
+                alt={`Cover of ${track.album.title}`}
+                className="album-cover"
+            />
+            <h3 className="title">{track.title}</h3>
+            <div className="artist">{track.artist.name}</div>
+            <div className="actions">
                 <button onClick={() => addToFavorites(index)}>Add to Favorites</button>
-                <button onClick={() => showAlbum(music.album.title)}>Show Album</button>
-                <button onClick={() => showArtist(music.artist.name)}>Show Artist</button>
+                <button onClick={() => showAlbum(track.album.title)}>Show Album</button>
+                <button onClick={() => showArtist(track.artist.name)}>Show Artist</button>
             </div>
-            <div id={`content${music.id}`} className="content"></div>
         </div>
     );
 };
