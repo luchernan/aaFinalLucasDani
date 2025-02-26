@@ -1,57 +1,69 @@
 import React, { useState, useMemo, useEffect } from "react";
 import type { Track } from "../types/interfaces";
 import { useLoaderData } from "react-router";
-import SearchBox from "../components/SearchBar";
-import CardList from "../components/CardList"; 
+import SearchBar from "../components/SearchBar";
+import CardList from "../components/CardList";
+import { getSongsByName } from "../services/api"; 
+
+
+
 
 const Search = () => {
-  
   const [isLoading, setIsLoading] = useState(true);
-
-
-  const loaderData = useLoaderData() as { songs: Track[] };
-
   const [search, setSearch] = useState<string>("");
+  const [songs, setSongs] = useState<Track[]>([]);
 
+  // const loaderData = useLoaderData() as { songs: Track[] } | null;
 
-  //filter
-  const filteredSongs = useMemo(() => {
-    return loaderData.songs.filter((song) =>
-      song.title.toLowerCase().startsWith(search.toLowerCase())
-    );
-  }, [search, loaderData.songs]);
+  // useEffect(() => {
+  //   if (loaderData?.songs) {
+  //     setSongs(loaderData.songs);
+  //     setIsLoading(false);
+  //   }
+  // }, [loaderData]);
 
-  useEffect(() => {
-    if (loaderData.songs.length > 0) {
-      setIsLoading(false);
+  // Función para ejecutar la búsqueda en la API
+  const handleSearchSubmit = async () => {
+    if (search.trim() === "") return; // Evita búsquedas vacías
+
+    setIsLoading(true);
+    try {
+      const fetchedSongs = await getSongsByName(search);
+      setSongs(fetchedSongs);
+    } catch (error) {
+      console.error("Error fetching songs:", error);
     }
-  }, [loaderData.songs]);
-
-  
-  const addToFavorites = (index: number) => {
-    console.log(`Added song at index ${index} to favorites`);
+    setIsLoading(false);
   };
 
-  const showAlbum = (albumTitle: string) => {
-    console.log(`Showing album: ${albumTitle}`);
-  };
+  // Filtrar canciones localmente si ya están cargadas
+  // const filteredSongs = useMemo(() => {
+    
+  //   return songs.filter((song) =>
 
-  const showArtist = (artistName: string) => {
-    console.log(`Showing artist: ${artistName}`);
-  };
+  //     song.title.toLowerCase().startsWith(search.toLowerCase())
+  //   );
+  // }, [search, songs]);
 
   return (
     <div>
-      <SearchBox placeholder="Search a song" onSearchChange={setSearch} />
+      <SearchBar 
+        placeholder="Search a song" 
+        onSearchChange={setSearch} 
+        onSearchSubmit={handleSearchSubmit} // Llama la búsqueda al presionar Enter
+      />
+    
 
-      {filteredSongs.length === 0 ? (
+      {isLoading ? (
+        <p className="text-gray-500 mt-4">Loading...</p>
+      ) : songs.length === 0 ? (
         <p className="text-gray-500 mt-4">No songs found.</p>
       ) : (
         <CardList
-          tracks={filteredSongs}
-          addToFavorites={addToFavorites}
-          showAlbum={showAlbum}
-          showArtist={showArtist}
+          tracks={songs}
+          addToFavorites={(index) => console.log(`Added song at index ${index} to favorites`)}
+          showAlbum={(albumTitle) => console.log(`Showing album: ${albumTitle}`)}
+          showArtist={(artistName) => console.log(`Showing artist: ${artistName}`)}
         />
       )}
     </div>
@@ -59,4 +71,3 @@ const Search = () => {
 };
 
 export default Search;
-
