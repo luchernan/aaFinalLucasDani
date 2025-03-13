@@ -46,6 +46,63 @@ export interface Artist {
   }
   
 
+
+  export interface TrackArtist {
+    id: number;
+    readable: boolean;
+    title: string;
+    title_short: string;
+    title_version: string;
+    link: string;
+    duration: number;
+    rank: number;
+    explicit_lyrics: boolean;
+    explicit_content_lyrics: number;
+    explicit_content_cover: number;
+    preview: string;
+    md5_image: string;
+    artist: Artist;
+    album: Album;
+    type: string;
+  }
+
+
+    export interface TrackAlbum {
+      id: number;
+      readable: boolean;
+      title: string;
+      title_short: string;
+      title_version: string;
+      isrc: string;
+      link: string;
+      duration: number;
+      track_position: number;
+      disk_number: number;
+      rank: number;
+      explicit_lyrics: boolean;
+      explicit_content_lyrics: number;
+      explicit_content_cover: number;
+      preview: string;
+      md5_image: string;
+      artist: {
+          id: number;
+          name: string;
+          tracklist: string;
+          type: string;
+      };
+      type: string;
+  }
+
+
+  export interface AlbumResponse{
+    data: TrackAlbum[];
+    total: number;
+  }
+  export interface ArtistResponse{
+    data: TrackArtist[];
+    total: number;
+  }
+
   export interface DeezerAPIResponse {
     data: Track[];
     total: number;

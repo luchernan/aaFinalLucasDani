@@ -76,11 +76,6 @@ const Search = () => {
   const handleShowAlbum = (albumId: number) => {
     navigate(`/album/${albumId}`); // Navega a la ruta del álbum
   };
-  
-  const handleShowArtist = (artistId: number) => {
-    navigate(`/artist/${artistId}`); // Navega a la ruta del álbum
-  };
-  
 
   return (
     <div className="min-h-screen p-4 bg-black flex flex-col items-center">
@@ -99,8 +94,8 @@ const Search = () => {
           addToFavorites={addToFavorites}
           removeFromFavorites={removeFromFavorites}
           isFavorite={(index) => favorites.some((fav) => fav.id === songs[index].id)}
-          showAlbum={handleShowAlbum} 
-          showArtist={handleShowArtist} 
+          showAlbum={(albumTitle) => console.log(`Showing album: ${albumTitle}`)}
+          showArtist={(artistName) => console.log(`Showing artist: ${artistName}`)}
         />
       )}
       {alert && <Alert message={alert.message} type={alert.type} onClose={() => setAlert(null)} />}
