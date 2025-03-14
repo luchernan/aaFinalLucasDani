@@ -74,11 +74,11 @@ const Search = () => {
 
 
   const handleShowAlbum = (albumId: number) => {
-    navigate(`/album/${albumId}`); // Navega a la ruta del álbum
+    navigate(`/album/${albumId}`); 
   };
-  
+
   const handleShowArtist = (artistId: number) => {
-    navigate(`/artist/${artistId}`); // Navega a la ruta del álbum
+    navigate(`/artist/${artistId}`);
   };
   
 

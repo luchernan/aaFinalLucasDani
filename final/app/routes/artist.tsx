@@ -5,6 +5,7 @@ import { getInfoByAlbumId, getSongsByAlbum, getInfoByArtistId, getSongsByArtist 
 import CardList from "../components/CardList";
 import ArtistCardList from "~/components/ArtistCardList";
 import { CheckCircle, AlertTriangle, X } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const Alert = ({ message, type, onClose }: { message: string; type: "success" | "warning"; onClose: () => void }) => {
   return (
@@ -23,8 +24,6 @@ const Alert = ({ message, type, onClose }: { message: string; type: "success" | 
 
 
 
-
-// Loader para obtener los datos del artist y sus canciones
 export async function loader({ params }: { params: { artistId: string } }) {
     const artistId = params.artistId;
   
@@ -35,15 +34,12 @@ export async function loader({ params }: { params: { artistId: string } }) {
     try {
       // Obtener la información del artista
       const artist = await getInfoByArtistId(artistId);
-      if (!artist) {
-        throw new Error("Artist not found");
+      if (!artist || !artist.tracklist) {
+        throw new Error("Artist tracklist not found");
       }
   
       // Obtener las canciones del artista
       const tracks = await getSongsByArtist(artist.tracklist);
-      if (!tracks) {
-        throw new Error("Failed to fetch artist tracks");
-      }
   
       return { artist, tracks };
     } catch (error) {
@@ -56,6 +52,7 @@ const Artist = () => {
     const [songs, setSongs] = useState<TrackArtist[]>([]);
     const [favorites, setFavorites] = useState<TrackArtist[]>([]);
     const [alert, setAlert] = useState<{ message: string; type: "success" | "warning" } | null>(null);
+    const navigate = useNavigate();
   
     // Actualiza `songs` con los datos de `tracks`
     useEffect(() => {
@@ -95,7 +92,14 @@ const Artist = () => {
       setAlert({ message: `"${music.title}" removed from favorites!`, type: "success" });
       setTimeout(() => setAlert(null), 3000);
     };
-  
+    const handleShowAlbum = (albumId: number) => {
+        navigate(`/album/${albumId}`);
+      };
+      const handleShowArtist = (artistId: number) => {
+        navigate(`/artist/${artistId}`);
+      };
+      
+      
     console.log(tracks);
   
     return (
@@ -107,14 +111,16 @@ const Artist = () => {
           <p className="text-gray-500 mt-4">No tracks found for this artist.</p>
         ) : (
           <ArtistCardList
-            tracks={songs} // Pasa `songs` en lugar de `tracks`
+            tracks={songs} 
             addToFavorites={addToFavorites}
             removeFromFavorites={removeFromFavorites}
             isFavorite={(index) => {
-              if (!songs[index]) return false; // Verifica que el índice sea válido
+              if (!songs[index]) return false; 
               return favorites.some((fav) => fav.id === songs[index].id);
             }}
-            showArtist={(artistId) => console.log(`Showing artist: ${artist.name}`)}
+            showAlbum={handleShowAlbum}
+            showArtist={handleShowArtist}
+           
           />
         )}
       </div>

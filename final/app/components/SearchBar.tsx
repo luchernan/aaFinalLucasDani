@@ -3,7 +3,7 @@ import React from "react";
 interface SearchBoxProps {
   placeholder: string;
   onSearchChange: (searchText: string) => void;
-  onSearchSubmit: () => void; // Nuevo prop para ejecutar la búsqueda
+  onSearchSubmit: () => void;
 }
 
 const SearchBar = ({ placeholder, onSearchChange, onSearchSubmit }: SearchBoxProps) => {
@@ -13,18 +13,26 @@ const SearchBar = ({ placeholder, onSearchChange, onSearchSubmit }: SearchBoxPro
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      onSearchSubmit(); // Llama la función de búsqueda al presionar Enter
+      onSearchSubmit();
     }
   }
 
   return (
-    <input
-      type="search"
-      placeholder={placeholder}
-      onChange={onChange}
-      onKeyDown={onKeyDown} // Detecta "Enter"
-      className="w-full max-w-sm px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-    />
+    <div className="flex items-center w-full max-w-md bg-white border border-gray-300 rounded-full shadow-md overflow-hidden focus-within:ring-2 focus-within:ring-green-500 transition duration-200">
+      <input
+        type="search"
+        placeholder={placeholder}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        className="w-full px-4 py-2 text-gray-700 outline-none bg-transparent"
+      />
+      <button
+        onClick={onSearchSubmit}
+        className="px-4 py-2 bg-green-500 text-white font-semibold rounded-r-full hover:bg-green-600 transition duration-200"
+      >
+        Buscar
+      </button>
+    </div>
   );
 };
 

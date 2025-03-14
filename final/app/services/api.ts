@@ -10,11 +10,6 @@
   };
 
 
-  // export async function getSongsForAlbumCard(name: string): Promise<TrackAlbum[]> {
-
-  //   return ;
-  // }
-
 
   export async function getSongsByName(name: string): Promise<Track[]> {
     try {
@@ -60,9 +55,6 @@
 
 
 
-
-
-
   export async function getInfoByAlbumId(albumId: string): Promise<Album> {
     try {
       console.log(albumId)
@@ -80,40 +72,47 @@
       const data: Album = await response.json();
 
       console.log(`Fetched Album for ID: ${albumId}`, data);
-      return data; // Devuelve el objeto Album
+      return data; 
     } catch (error) {
       console.error(`Error fetching album for ID "${albumId}":`, error);
-      throw error; // Relanza el error para que el llamador lo maneje
+      throw error; 
     }
   }
 
   export async function getInfoByArtistId(artistId: string): Promise<Artist> {
     try {
-      console.log(artistId)
-      
-      const response: Response = await fetch(`${ARTIST_URL}${encodeURIComponent(artistId)}${LIMIT_URL}`, {
+      const response: Response = await fetch(`${ARTIST_URL}${encodeURIComponent(artistId)}`, {
         method: "GET",
-      
+        headers: HEADERS, // Asegúrate de incluir los headers
       });
   
       if (!response.ok) {
         throw new Error(`Artist "${artistId}" not found: ${response.status} ${response.statusText}`);
       }
   
-
       const data: Artist = await response.json();
-
-      console.log(`Fetched Album for ID: ${artistId}`, data);
-      return data; // Devuelve el objeto Album
+      console.log(`Fetched Artist for ID: ${artistId}`, data);
+  
+      // Verifica que la propiedad `tracklist` esté presente
+      if (!data.tracklist) {
+        throw new Error("Tracklist not found in artist data");
+      }
+  
+      return data;
     } catch (error) {
-      console.error(`Error fetching album for ID "${artistId}":`, error);
-      throw error; // Relanza el error para que el llamador lo maneje
+      console.error(`Error fetching artist for ID "${artistId}":`, error);
+      throw error;
     }
   }
 
-  export async function getSongsByArtist(Tracklist: string): Promise<Track[]> {
+  export async function getSongsByArtist(tracklist: string): Promise<Track[]> {
     try {
-      const response: Response = await fetch(`${Tracklist}`, {
+      // Verifica que `tracklist` no sea undefined o vacío
+      if (!tracklist) {
+        throw new Error("Tracklist URL is undefined or empty");
+      }
+  
+      const response: Response = await fetch(tracklist, {
         method: "GET",
         headers: HEADERS,
       });
@@ -122,13 +121,15 @@
         throw new Error(`Tracklist not found: ${response.status} ${response.statusText}`);
       }
   
-     
       const data: DeezerAPIResponse = await response.json();
-      console.log(`Fetched Songs for:`, data.data);
-      return data.data; 
+      if (!data.data || data.data.length === 0) {
+        throw new Error("No tracks found for this artist");
+      }
+  
+      console.log(`Fetched Songs for Artist:`, data.data);
+      return data.data;
     } catch (error) {
-      console.error(`Error fetching songs for :`, error);
-      throw error; 
+      console.error(`Error fetching songs for Artist:`, error);
+      throw error;
     }
   }
-

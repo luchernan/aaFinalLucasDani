@@ -1,10 +1,12 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useLoaderData } from "react-router";
-import type { Album, Track, AlbumResponse, TrackArtist, TrackAlbum } from "../types/interfaces";
+import type { Album, Artist ,Track, AlbumResponse, TrackArtist, TrackAlbum } from "../types/interfaces";
 import { getInfoByAlbumId, getSongsByAlbum } from "../services/api";
 import CardList from "../components/CardList";
 import AlbumCardList from "~/components/AlbumCardList";
 import { CheckCircle, AlertTriangle, X } from "lucide-react";
+import { useNavigate } from "react-router";
+
 
 const Alert = ({ message, type, onClose }: { message: string; type: "success" | "warning"; onClose: () => void }) => {
   return (
@@ -51,8 +53,9 @@ const Album = () => {
     const [songs, setSongs] = useState<TrackAlbum[]>([]);
     const [favorites, setFavorites] = useState<TrackAlbum[]>([]);
     const [alert, setAlert] = useState<{ message: string; type: "success" | "warning" } | null>(null);
+     const navigate = useNavigate();
   
-    // Actualiza `songs` con los datos de `tracks`
+   
     useEffect(() => {
       setSongs(tracks);
     }, [tracks]);
@@ -90,6 +93,11 @@ const Album = () => {
       setAlert({ message: `"${music.title}" removed from favorites!`, type: "success" });
       setTimeout(() => setAlert(null), 3000);
     };
+    
+      const handleShowArtist = (artistId: number) => {
+        navigate(`/artist/${artistId}`);
+      };
+      
   
     console.log(tracks);
   
@@ -109,7 +117,8 @@ const Album = () => {
               if (!songs[index]) return false; // Verifica que el índice sea válido
               return favorites.some((fav) => fav.id === songs[index].id);
             }}
-            showArtist={(artistName) => console.log(`Showing artist: ${artistName}`)}
+            showArtist={handleShowArtist}
+            
           />
         )}
       </div>

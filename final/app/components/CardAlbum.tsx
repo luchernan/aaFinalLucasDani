@@ -8,7 +8,7 @@ interface CardProps {
   addToFavorites: (index: number) => void;
   removeFromFavorites: (index: number) => void;
   isFavorite: boolean;
-  showArtist: (artistName: string) => void;
+  showArtist: (artistId: number) => void;
 }
 
 const CardAlbum: React.FC<CardProps> = ({ track, index, addToFavorites, isFavorite, removeFromFavorites, showArtist }) => {
@@ -24,13 +24,13 @@ const CardAlbum: React.FC<CardProps> = ({ track, index, addToFavorites, isFavori
         <h3 className="text-white text-lg font-semibold mt-3 truncate w-40 text-center">{track.title}</h3>
         <div
           className="text-gray-400 text-sm truncate w-40 text-center cursor-pointer hover:text-white"
-          onClick={() => showArtist(track.artist.name)}
+          onClick={() => showArtist(track.artist.id)}
         >
           {track.artist.name}
         </div>
         <div className="flex gap-3 mt-3">
         <Button
-          onClick={() => showArtist(track.artist.name)}
+          onClick={() => showArtist(track.artist.id)}
           text="Artist"
           variant="artist"
         />

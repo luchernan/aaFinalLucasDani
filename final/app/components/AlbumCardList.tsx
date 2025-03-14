@@ -8,7 +8,7 @@ interface AlbumCardListProps {
   addToFavorites: (index: number) => void;
   removeFromFavorites: (index: number) => void;
   isFavorite: (index: number) => boolean;
-  showArtist: (artistName: string) => void;
+  showArtist: (artistId: number) => void;
 }
 
 const AlbumCardList = ({ tracks, addToFavorites, showArtist, isFavorite,removeFromFavorites }: AlbumCardListProps) => {

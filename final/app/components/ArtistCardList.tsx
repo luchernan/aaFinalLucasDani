@@ -9,9 +9,10 @@ interface AlbumCardListProps {
   removeFromFavorites: (index: number) => void;
   isFavorite: (index: number) => boolean;
   showArtist: (artistId: number) => void;
+  showAlbum: (albumId: number) => void;
 }
 
-const ArtistCardList = ({ tracks, addToFavorites, showArtist, isFavorite,removeFromFavorites }: AlbumCardListProps) => {
+const ArtistCardList = ({ tracks, addToFavorites, showArtist, showAlbum, isFavorite,removeFromFavorites }: AlbumCardListProps) => {
   // const { albumId } = useParams<{ albumId: string }>();
   // const { tracks } = useLoaderData() as { tracks: TrackAlbum[] };
   // const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +29,7 @@ const ArtistCardList = ({ tracks, addToFavorites, showArtist, isFavorite,removeF
         removeFromFavorites={removeFromFavorites}
         isFavorite={isFavorite(index)}
         showArtist={showArtist}
+        showAlbum={showAlbum}
       />
     ))}
   </div>
