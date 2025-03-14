@@ -23,26 +23,30 @@ This is a project developed with **React Router** that uses the **Deezer API** t
 ```
 📦 Proyecto
 ├── 📂 src
-│   ├── 📂 components  
-│   │   ├── Button.tsx         
-│   │   ├── Card.tsx           
-│   │   ├── CardList.tsx       
-│   │   ├── Footer.tsx         
-│   │   ├── Header.tsx         
-│   │   ├── SearchBar.tsx     
-│   ├── 📂 pages 
-│   │   ├── home.tsx           
-│   │   ├── album.tsx          
-│   │   ├── artist.tsx         
-│   │   ├── favorites.tsx      
-│   │   ├── search.tsx         
-│   ├── 📂 services  
-│   │   ├── api.ts            
-│   ├── 📂 types  # Definición de tipos TypeScript
-│   │   ├── interfaces.ts      
-│   ├── 📜 app.css  
-│   ├── 📜 root.tsx  
-│   ├── 📜 routes.ts  
+│ ├── 📂 components
+│ │ ├── AlbumCardList.tsx 
+│ │ ├── ArtistCardList.tsx 
+│ │ ├── Button.tsx
+│ │ ├── Card.tsx
+│ │ ├── CardAlbum.tsx 
+│ │ ├── CardArtist.tsx 
+│ │ ├── CardList.tsx
+│ │ ├── Footer.tsx
+│ │ ├── Header.tsx
+│ │ ├── SearchBar.tsx
+│ ├── 📂 pages
+│ │ ├── album.tsx
+│ │ ├── artist.tsx
+│ │ ├── favorites.tsx
+│ │ ├── home.tsx
+│ │ ├── search.tsx
+│ ├── 📂 services
+│ │ ├── api.ts
+│ ├── 📂 types # Definición de tipos TypeScript
+│ │ ├── interfaces.ts
+│ ├── 📜 app.css
+│ ├── 📜 root.tsx
+│ ├── 📜 routes.ts
 ```
 
 ## Component Explanation
@@ -71,6 +75,7 @@ function Button({ text, variant, onClick }: ButtonProps) {
 Component that displays song information, including an image, title, and options to add or remove from favorites.
 
 ```tsx
+
 const Card = ({ track, index, addToFavorites, removeFromFavorites, isFavorite }: CardProps) => {
     const handleFavoriteClick = () => {
         if (isFavorite) {
@@ -102,6 +107,118 @@ const Card = ({ track, index, addToFavorites, removeFromFavorites, isFavorite }:
     );
 };
 ```
+### **CardArtist.tsx**
+Component that displays song from an artist information, including a title, and options to add or remove from favorites.
+
+```tsx
+import React from "react";
+import type { Track, TrackAlbum ,Album, TrackArtist } from "../types/interfaces";
+import Button from "./Button";
+
+interface CardProps {
+  track: TrackArtist;
+  index: number;
+  addToFavorites: (index: number) => void;
+  removeFromFavorites: (index: number) => void;
+  isFavorite: boolean;
+  showArtist: (artistId: number) => void;
+
+  showAlbum: (artistId: number) => void;
+}
+
+const CardArtist: React.FC<CardProps> = ({ track, index, addToFavorites, isFavorite, showAlbum ,removeFromFavorites, showArtist }) => {
+    const handleFavoriteClick = () => {
+        if (isFavorite) {
+            removeFromFavorites(index);
+        } else {
+            addToFavorites(index);
+        }
+    };
+    return (
+      <div className="bg-zinc-900 p-4 rounded-lg shadow-md hover:bg-zinc-800 transition duration-200 flex flex-col items-center">
+        <h3 className="text-white text-lg font-semibold mt-3 truncate w-40 text-center">{track.title}</h3>
+        <div
+          className="text-gray-400 text-sm truncate w-40 text-center cursor-pointer hover:text-white"
+        
+        >
+          {track.artist.name}
+        </div>
+        <div className="flex gap-3 mt-3">
+        <Button
+          onClick={() => showAlbum(track.album.id)}
+          text="Album"
+          variant="album"
+        />
+        
+        </div>
+        {track.preview && (
+        <audio controls className="w-full mt-4 rounded-md shadow-inner">
+          <source src={track.preview} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      )}
+      </div>
+    );
+  };
+
+export default CardArtist;
+```
+
+### **CardAlbum.tsx**
+Component that displays song from an album information, including a title, and options to add or remove from favorites.
+
+```tsx
+
+import React from "react";
+import type { Track, TrackAlbum ,Album } from "../types/interfaces";
+import Button from "./Button";
+
+interface CardProps {
+  track: TrackAlbum;
+  index: number;
+  addToFavorites: (index: number) => void;
+  removeFromFavorites: (index: number) => void;
+  isFavorite: boolean;
+  showArtist: (artistId: number) => void;
+}
+
+const CardAlbum: React.FC<CardProps> = ({ track, index, addToFavorites, isFavorite, removeFromFavorites, showArtist }) => {
+    const handleFavoriteClick = () => {
+        if (isFavorite) {
+            removeFromFavorites(index);
+        } else {
+            addToFavorites(index);
+        }
+    };
+    return (
+      <div className="bg-zinc-900 p-4 rounded-lg shadow-md hover:bg-zinc-800 transition duration-200 flex flex-col items-center">
+        <h3 className="text-white text-lg font-semibold mt-3 truncate w-40 text-center">{track.title}</h3>
+        <div
+          className="text-gray-400 text-sm truncate w-40 text-center cursor-pointer hover:text-white"
+          onClick={() => showArtist(track.artist.id)}
+        >
+          {track.artist.name}
+        </div>
+        <div className="flex gap-3 mt-3">
+        <Button
+          onClick={() => showArtist(track.artist.id)}
+          text="Artist"
+          variant="artist"
+        />
+        
+        </div>
+        {track.preview && (
+        <audio controls className="w-full mt-4 rounded-md shadow-inner">
+          <source src={track.preview} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+      )}
+      </div>
+    );
+  };
+
+export default CardAlbum;
+```
 
 ### **CardList.tsx**
 Renders a list of songs using the `Card` component.
@@ -126,6 +243,99 @@ const CardList = ({ tracks, addToFavorites, removeFromFavorites, isFavorite, sho
   );
 };
 ```
+
+### **ArtistCardList.tsx**
+Renders a list of songs from an artisst using the `CardArtist` component.
+
+```tsx
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { getInfoByAlbumId, getSongsByAlbum } from "../services/api";
+import type { Track, TrackAlbum, TrackArtist } from "../types/interfaces";
+import CardArtist from "./CardArtist";
+interface AlbumCardListProps {
+  tracks: TrackArtist[];
+  addToFavorites: (index: number) => void;
+  removeFromFavorites: (index: number) => void;
+  isFavorite: (index: number) => boolean;
+  showArtist: (artistId: number) => void;
+  showAlbum: (albumId: number) => void;
+}
+
+const ArtistCardList = ({ tracks, addToFavorites, showArtist, showAlbum, isFavorite,removeFromFavorites }: AlbumCardListProps) => {
+
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+    {tracks.map((track, index) => (
+      <CardArtist
+        key={track.id}
+        track={track}
+        index={index}
+        addToFavorites={addToFavorites}
+        removeFromFavorites={removeFromFavorites}
+        isFavorite={isFavorite(index)}
+        showArtist={showArtist}
+        showAlbum={showAlbum}
+      />
+    ))}
+  </div>
+  );
+};
+
+export default ArtistCardList;
+
+
+
+```
+### **AlbumCardList.tsx**
+Renders a list of songs from an album using the `CardAlbum` component.
+
+```tsx
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import { getInfoByAlbumId, getSongsByAlbum } from "../services/api";
+import type { Track, TrackAlbum } from "../types/interfaces";
+import CardAlbum from "./CardAlbum";
+interface AlbumCardListProps {
+  tracks: TrackAlbum[];
+  addToFavorites: (index: number) => void;
+  removeFromFavorites: (index: number) => void;
+  isFavorite: (index: number) => boolean;
+  showArtist: (artistId: number) => void;
+}
+
+const AlbumCardList = ({ tracks, addToFavorites, showArtist, isFavorite,removeFromFavorites }: AlbumCardListProps) => {
+  // const { albumId } = useParams<{ albumId: string }>();
+  // const { tracks } = useLoaderData() as { tracks: TrackAlbum[] };
+  // const [isLoading, setIsLoading] = useState(true);
+
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
+    {tracks.map((track, index) => (
+      <CardAlbum
+        key={track.id}
+        track={track}
+        index={index}
+        addToFavorites={addToFavorites}
+        removeFromFavorites={removeFromFavorites}
+        isFavorite={isFavorite(index)}
+        showArtist={showArtist}
+      />
+    ))}
+  </div>
+  );
+};
+
+export default AlbumCardList;
+
+
+
+
+```
+
+
 
 ### **SearchBar.tsx**
 Search bar to filter songs.
@@ -270,6 +480,146 @@ return (
     </div>
   );
 ```
+### **Album Page  (`album.tsx`)**
+
+Allows showing the album the song belongs to.
+#### **Main States:**
+```tsx
+  const { album, tracks } = useLoaderData() as { album: Album; tracks: TrackAlbum[] };
+    const [songs, setSongs] = useState<TrackAlbum[]>([]);
+    const [favorites, setFavorites] = useState<TrackAlbum[]>([]);
+     const navigate = useNavigate();
+  
+```
+
+#### **Logic:**
+```tsx
+
+export async function loader({ params }: { params: { albumId: string } }) {
+  const albumId = params.albumId;
+
+  if (!albumId) {
+    throw new Error("Album ID is required");
+  }
+
+  try {
+
+    const album = await getInfoByAlbumId(albumId);
+
+
+    const tracks = await getSongsByAlbum(album.tracklist);
+
+    return { album, tracks };
+  } catch (error) {
+    console.error("Error fetching album data:", error);
+    throw new Error("Failed to load album data");
+  }
+}
+```
+
+
+#### **Displaying Found Songs:**
+```tsx
+ return (
+      <div>
+        <h1 className="text-2xl font-bold mb-4">{album.title}</h1>
+        <img src={album.cover_big} alt={`Cover of ${album.title}`} className="w-64 h-64 rounded-md mb-4" />
+  
+        {tracks.length === 0 ? (
+          <p className="text-gray-500 mt-4">No tracks found for this album.</p>
+        ) : (
+          <AlbumCardList
+            tracks={songs} // Pasa `songs` en lugar de `tracks`
+            addToFavorites={addToFavorites}
+            removeFromFavorites={removeFromFavorites}
+            isFavorite={(index) => {
+              if (!songs[index]) return false; // Verifica que el índice sea válido
+              return favorites.some((fav) => fav.id === songs[index].id);
+            }}
+            showArtist={handleShowArtist}
+            
+          />
+        )}
+      </div>
+    );
+```
+
+
+
+### **Artist Page  (`artist.tsx`)**
+
+Allows showing the artist info and songs.
+#### **Main States:**
+```tsx
+    const { artist, tracks } = useLoaderData() as { artist: Artist; tracks: TrackArtist[] };
+    const [songs, setSongs] = useState<TrackArtist[]>([]);
+    const [favorites, setFavorites] = useState<TrackArtist[]>([]);
+    const navigate = useNavigate();
+  
+```
+
+
+#### **Logic:**
+```tsx
+
+export async function loader({ params }: { params: { artistId: string } }) {
+    const artistId = params.artistId;
+  
+    if (!artistId) {
+      throw new Error("Artist ID is required");
+    }
+  
+    try {
+ 
+      const artist = await getInfoByArtistId(artistId);
+      if (!artist || !artist.tracklist) {
+        throw new Error("Artist tracklist not found");
+      }
+  
+   
+      const tracks = await getSongsByArtist(artist.tracklist);
+  
+      return { artist, tracks };
+    } catch (error) {
+      console.error("Error fetching artist data:", error);
+      throw new Error("Failed to load artist data");
+    }
+  }
+```
+
+
+
+#### **Displaying Found Songs:**
+```tsx
+
+    return (
+      <div>
+        <h1 className="text-2xl font-bold mb-4">{artist.name}</h1>
+        <img src={artist.picture_big} alt={`Cover of ${artist.name}`} className="w-64 h-64 rounded-md mb-4" />
+  
+        {tracks.length === 0 ? (
+          <p className="text-gray-500 mt-4">No tracks found for this artist.</p>
+        ) : (
+          <ArtistCardList
+            tracks={songs} 
+            addToFavorites={addToFavorites}
+            removeFromFavorites={removeFromFavorites}
+            isFavorite={(index) => {
+              if (!songs[index]) return false; 
+              return favorites.some((fav) => fav.id === songs[index].id);
+            }}
+            showAlbum={handleShowAlbum}
+            showArtist={handleShowArtist}
+           
+          />
+        )}
+      </div>
+    );
+  };
+```
+
+
+
 
 ### **Favorites Page  (`favorites.tsx`)**
 
